@@ -3,85 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NA3 FAN QUIZ </title>
+    <title>NA3 EXCLUSIVE QUIZ</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #004d40; --secondary: #00796b; --green: #2ecc71; --yellow: #f1c40f; --red: #e74c3c; --bg: #e0f2f1; }
-        body { font-family: 'Kanit', sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
-        .card { background: white; width: 92%; max-width: 480px; padding: 30px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; position: relative; }
+        :root { --primary: #1a237e; --secondary: #3949ab; --green: #2ecc71; --yellow: #f1c40f; --red: #e74c3c; --bg: #f0f2f5; }
+        body { font-family: 'Kanit', sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: white; width: 92%; max-width: 480px; padding: 30px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; }
         .hidden { display: none !important; }
-        input { width: 90%; padding: 16px; margin: 20px 0; border: 2px solid #b2dfdb; border-radius: 14px; font-size: 1.1rem; text-align: center; outline: none; }
-        button { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 14px; font-size: 1.1rem; cursor: pointer; width: 100%; margin: 10px 0; font-weight: 500; transition: 0.2s; }
-        button:hover { background: var(--secondary); transform: translateY(-2px); }
-        #timer-bar { width: 100%; height: 14px; background: #eee; border-radius: 7px; margin: 20px 0; overflow: hidden; border: 1px solid #ddd; }
+        input { width: 90%; padding: 16px; margin: 20px 0; border: 2px solid #ddd; border-radius: 14px; font-size: 1.1rem; text-align: center; outline: none; }
+        button { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 14px; font-size: 1.1rem; cursor: pointer; width: 100%; margin: 10px 0; font-weight: 500; }
+        #timer-bar { width: 100%; height: 12px; background: #eee; border-radius: 6px; margin: 20px 0; overflow: hidden; }
         #timer-progress { width: 100%; height: 100%; background: var(--green); transition: 1s linear; }
-        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
-        .opt-btn { background: white; color: #333; border: 2px solid var(--primary); text-align: left; padding: 14px 20px; font-size: 1rem; border-radius: 14px; cursor: pointer; transition: 0.2s; }
-        .opt-btn:hover { background: #f0f4f4; border-color: var(--secondary); }
-        .rank-box { margin-top: 25px; background: #f1f8e9; padding: 20px; border-radius: 16px; text-align: left; }
-        .rank-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #ccc; }
-        .pulse-warning { animation: pulse-red 0.5s infinite; }
-        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0px rgba(231, 76, 60, 0.4); } 100% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); } }
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
+        .opt-btn { background: white; color: #333; border: 2px solid #e0e0e0; text-align: left; padding: 14px 20px; font-size: 1rem; border-radius: 12px; cursor: pointer; transition: 0.2s; }
+        .opt-btn:hover { border-color: var(--primary); background: #f8f9ff; }
+        .correct { background: var(--green) !important; color: white !important; border-color: var(--green) !important; }
+        .wrong { background: var(--red) !important; color: white !important; border-color: var(--red) !important; }
+        .rank-box { margin-top: 20px; background: #f8f9fa; padding: 15px; border-radius: 15px; text-align: left; border: 1px solid #eee; }
+        .rank-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
     </style>
 </head>
 <body>
 
     <div id="start-screen" class="card">
-        <h1 style="color: var(--primary); margin: 0;">😎 NA3 FAN QUIZ</h1>
-        <p style="color: #666;">พิสูจน์ความเป็นแฟนพันธุ์แท้ NA3!</p>
-        <input type="text" id="username" placeholder="ระบุชื่อของคุณ" maxlength="40">
-        <button id="btn-start">เริ่มทำแบบทดสอบ</button>
+        <h1 style="color: var(--primary); margin: 0;">🏆 แฟนพันธุ์แท้ NA3</h1>
+        <p style="color: #666;">ตอบคำถาม 10 ข้อ วัดระดับความสนิท!</p>
+        <input type="text" id="username" placeholder="ใส่ชื่อของคุณที่นี่" maxlength="30">
+        <button id="btn-start">เริ่มเกม</button>
     </div>
 
     <div id="game-screen" class="card hidden">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <span id="q-number" style="font-weight: bold; color: var(--primary);">ข้อที่ 1/10</span>
-            <span id="score-now" style="background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.9rem;">คะแนน: 0</span>
+            <span id="score-now" style="background: var(--primary); color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.9rem;">0</span>
         </div>
         <div id="timer-bar"><div id="timer-progress"></div></div>
-        <h2 id="question-text" style="font-size: 1.2rem; color: #222; margin: 10px 0; min-height: 60px;">คำถาม...</h2>
+        <h2 id="question-text" style="font-size: 1.15rem; min-height: 50px; margin: 15px 0;">?</h2>
         <div id="options-container" class="options-grid"></div>
     </div>
 
     <div id="result-screen" class="card hidden">
-        <h2 style="margin: 0;">จบการทดสอบ!</h2>
-        <div style="font-size: 3.5rem; font-weight: 700; color: var(--primary); margin: 10px 0;" id="final-score">0</div>
-        <p id="save-status" style="color: var(--secondary); font-style: italic;">กำลังบันทึกคะแนน...</p>
+        <h2>จบเกม! คะแนนของคุณคือ</h2>
+        <div style="font-size: 4rem; font-weight: 700; color: var(--primary);" id="final-score">0</div>
+        <p id="save-status">กำลังบันทึกคะแนน...</p>
         <div class="rank-box">
-            <strong style="display: block; margin-bottom: 10px;">🏆 Top 5 อันดับความเท่</strong>
-            <div id="rank-list">กำลังโหลดอันดับ...</div>
+            <strong>📊 อันดับสูงสุด 5 ลำดับ</strong>
+            <div id="rank-list" style="margin-top: 10px;"></div>
         </div>
-        <button onclick="location.reload()" style="margin-top: 20px; background: #555;">เล่นอีกครั้ง</button>
+        <button onclick="location.reload()" style="margin-top: 20px; background: #666;">เล่นอีกครั้ง</button>
     </div>
 
     <audio id="snd-correct" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
     <audio id="snd-wrong" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
-    <audio id="snd-tick" src="https://assets.mixkit.co/active_storage/sfx/2056/2056-preview.mp3"></audio>
 
     <script>
-        const FIREBASE_URL = "https://quizgame-bd719-default-rtdb.asia-southeast1.firebasedatabase.app/scores.json"; 
+        const FIREBASE_URL = "https://quizgame-bd719-default-rtdb.asia-southeast1.firebasedatabase.app/scores.json";
 
         const questions = [
             { q: "1. NA 3 คืออะไร?", a: ["ผู้คน", "สถานที่", "รถ", "บ้าน"], c: 0 },
-            { q: "2. ใครที่เท่ที่สุดใน NA3?", a: ["นนท์", "นนท์เท่", "นนท์เฟี้ยว", "นนท์เก่ว"], c: 0 },
-            { q: "3. ถ้าพูดถึงความเฟี้ยวใน NA3 ต้องนึกถึงใครเป็นคนแรก?", a: ["เพื่อนข้างๆ", "นนท์คนเดิม", "น๊นท์ (เสียงสูง)", "ถูกทุกข้อที่คือนนท์"], c: 1 },
-            { q: "4. นนท์ NA3 มีดีที่ตรงไหนมากที่สุด?", a: ["หน้าตาดีเกินต้าน", "ความเท่ระเบิดระเบ้อ", "ความเก๋าระดับเทพ", "ถูกทุกข้อ"], c: 3 },
-            { q: "5. วันไหนที่นนท์จะหยุดเท่?", a: ["วันหยุด", "วันเงินเดือนออก", "ไม่มีวันหยุดเท่", "วันลาพักร้อน"], c: 2 },
-            { q: "6. ระดับความหล่อของนนท์ในสายตาชาว NA3?", a: ["ก็พอได้นะ", "หล่อมาก", "หล่อทะลุปรอท", "หล่อเกินคำบรรยาย"], c: 3 },
-            { q: "7. ท่าทางประจำตัวที่นนท์ชอบทำบ่อยๆ คือ?", a: ["ท่ายิ้มกระชากใจ", "ท่ายืนสุดเท่", "ท่าเดินเฟี้ยวๆ", "ท่าไหนก็น่ารักถ้าเป็นนนท์"], c: 3 },
-            { q: "8. ถ้า NA3 ไม่มีนนท์ บรรยากาศจะเป็นอย่างไร?", a: ["เงียบเหงาเกินไป", "ขาดสีสันความสนุก", "ขาดคนเท่ประจำกลุ่ม", "ถูกทุกข้อ"], c: 3 },
-            { q: "9. สโลแกนประจำตัว 'นนท์ NA3' คืออะไร?", a: ["หล่ออมตะ", "เท่ระเบิดระเบ้อ", "เฟี้ยวเงาะเจ้าชายเย็นชา", "ตำนานที่ยังมีลมหายใจ"], c: 1 },
-            { q: "10. สรุปแล้วใน NA3 ใครคือตัวจริงที่ 1 ในใจคุณ?", a: ["นนท์", "นนท์แน่นอน", "นนท์คนเดียว", "แน่นอนว่าต้องเป็นนนท์"], c: 0 }
+            { q: "2. ใครเตี้ยสุด?", a: ["ไบค์", "เจมส์", "ฟ้า", "อาร์ท"], c: 3 },
+            { q: "3. ร้านอาหารร้านโปรดหลังจากเล่นไฟ?", a: ["ป้าไข่เจียว", "หมูปิ้ง", "โอกาเนะ", "ราดหน้ายอดผัก"], c: 1 },
+            { q: "4. ประวัติศาสตร์ที่มีการเกไพ่กันเยอะที่สุดคือ?", a: ["400", "500", "600", "700"], c: 3 },
+            { q: "5. ใครที่พาสาวมาบ้านและไล่เพื่อนออกจากบ้านจนหมด?", a: ["คุณสตางค์", "ไอ้แบ้", "พง", "เจมส์"], c: 3 },
+            { q: "6. ใครมีระยะทางวิ่งไกลที่สุดตอนที่ดื่มเหล้า?", a: ["นาย", "ปัน", "ฟ้า", "สปาย"], c: 2 },
+            { q: "7. ห้องลับชั้นสองเป็นห้องสำหรับปฏิบัติการอะไร?", a: ["ห้องเชือด", "ห้องนอนเสริม", "ห้องสมุนไพร", "ฮ่องๆ"], c: 2 },
+            { q: "8. ใครขโมยเงินบ้านบนลิ้นชักชั้นสอง?", a: ["นนท์", "เจมส์", "พี", "หาข้อสรุปไม่ได้"], c: 3 },
+            { q: "9. ใครเคยเล็งสาวคนเดียวกัน?", a: ["เจมส์-นนท์", "ไบค์-ปัน", "พี-เนม", "เจมส์-ปัน"], c: 3 },
+            { q: "10. ใครเคยหัวร้อนจนเล่นไฟหมดตัว?", a: ["นาย", "ฟ้า", "ปัน", "นิก"], c: 0 }
         ];
 
-        let currentQ = 0, score = 0, timer, timeLeft = 15, userName = "";
-        const sndCorrect = document.getElementById('snd-correct');
-        const sndWrong = document.getElementById('snd-wrong');
-        const sndTick = document.getElementById('snd-tick');
+        let currentQ = 0, score = 0, timer, timeLeft = 15, userName = "", canAnswer = true;
 
         document.getElementById('btn-start').onclick = () => {
             userName = document.getElementById('username').value.trim();
-            if(!userName) return alert("ระบุชื่อหน่อยครับความเท่จะได้มีที่อยู่!");
+            if(!userName) return alert("กรุณาใส่ชื่อก่อนเริ่มเล่น");
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
             showQuestion();
@@ -89,97 +84,82 @@
 
         function showQuestion() {
             if(currentQ >= questions.length) return endGame();
+            canAnswer = true;
             clearInterval(timer);
             timeLeft = 15;
             updateUI();
+            
             const qData = questions[currentQ];
             document.getElementById('q-number').innerText = `ข้อที่ ${currentQ + 1}/10`;
             document.getElementById('question-text').innerText = qData.q;
+            
             const container = document.getElementById('options-container');
             container.innerHTML = '';
             qData.a.forEach((opt, idx) => {
                 const btn = document.createElement('button');
                 btn.className = 'opt-btn';
                 btn.innerText = opt;
-                btn.onclick = () => checkAnswer(idx);
+                btn.onclick = () => checkAnswer(idx, btn);
                 container.appendChild(btn);
             });
+
             timer = setInterval(() => {
                 timeLeft--;
                 updateUI();
-                if(timeLeft <= 5 && timeLeft > 0) {
-                    sndTick.currentTime = 0;
-                    sndTick.play();
-                }
-                if(timeLeft <= 0) checkAnswer(-1);
+                if(timeLeft <= 0) checkAnswer(-1, null);
             }, 1000);
         }
 
         function updateUI() {
-            const progress = document.getElementById('timer-progress');
-            const card = document.getElementById('game-screen');
-            progress.style.width = (timeLeft / 15 * 100) + "%";
-            
-            if(timeLeft >= 11) { 
-                progress.style.background = "var(--green)"; 
-                card.classList.remove('pulse-warning');
-            } else if(timeLeft >= 6) {
-                progress.style.background = "var(--yellow)"; 
-                card.classList.remove('pulse-warning');
-            } else {
-                progress.style.background = "var(--red)"; 
-                card.classList.add('pulse-warning');
-            }
+            const prog = document.getElementById('timer-progress');
+            prog.style.width = (timeLeft / 15 * 100) + "%";
+            prog.style.background = timeLeft > 10 ? "var(--green)" : (timeLeft > 5 ? "var(--yellow)" : "var(--red)");
         }
 
-        function checkAnswer(idx) {
+        function checkAnswer(idx, btn) {
+            if(!canAnswer) return;
+            canAnswer = false;
             clearInterval(timer);
-            if(idx === questions[currentQ].c) {
-                sndCorrect.currentTime = 0; sndCorrect.play();
-                let points = 10;
-                if(timeLeft < 11 && timeLeft >= 6) points = 8; 
-                if(timeLeft < 6) points = 5;
-                score += points;
+            const correctIdx = questions[currentQ].c;
+
+            if(idx === correctIdx) {
+                if(btn) btn.classList.add('correct');
+                document.getElementById('snd-correct').play();
+                score += 10; 
             } else {
-                sndWrong.currentTime = 0; sndWrong.play();
+                if(btn) btn.classList.add('wrong');
+                document.querySelectorAll('.opt-btn')[correctIdx].classList.add('correct');
+                document.getElementById('snd-wrong').play();
             }
+
             document.getElementById('score-now').innerText = `คะแนน: ${score}`;
             currentQ++;
-            setTimeout(showQuestion, 600);
+            setTimeout(showQuestion, 1200);
         }
 
         async function endGame() {
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
             document.getElementById('final-score').innerText = score;
+
             try {
-                const res = await fetch(FIREBASE_URL, {
+                await fetch(FIREBASE_URL, {
                     method: "POST",
-                    body: JSON.stringify({ name: userName, score: score, date: new Date().toLocaleString(), type: "NA3_FAN" })
+                    body: JSON.stringify({ name: userName, score: score, date: new Date().toLocaleString() })
                 });
-                if(res.ok) {
-                    document.getElementById('save-status').innerText = "บันทึกความเท่เรียบร้อย!";
-                    loadLeaderboard();
-                }
-            } catch (e) {
-                document.getElementById('save-status').innerText = "บันทึกล้มเหลว (ลองรีเฟรชใหม่)";
-            }
+                document.getElementById('save-status').innerText = "บันทึกอันดับเรียบร้อย!";
+                loadLeaderboard();
+            } catch (e) { document.getElementById('save-status').innerText = "บันทึกล้มเหลว"; }
         }
 
         async function loadLeaderboard() {
-            try {
-                const res = await fetch(FIREBASE_URL);
-                const data = await res.json();
-                if(!data) return;
-                let arr = Object.values(data);
-                arr.sort((a, b) => b.score - a.score);
-                const list = document.getElementById('rank-list');
-                list.innerHTML = arr.slice(0, 5).map((it, i) => `
-                    <div class="rank-item">
-                        <span>${i+1}. ${it.name}</span>
-                        <strong style="color:var(--primary)">${it.score}</strong>
-                    </div>`).join('');
-            } catch (e) { console.log(e); }
+            const res = await fetch(FIREBASE_URL);
+            const data = await res.json();
+            if(!data) return;
+            let arr = Object.values(data).sort((a,b) => b.score - a.score);
+            document.getElementById('rank-list').innerHTML = arr.slice(0,5).map((it, i) => 
+                `<div class="rank-item"><span>${i+1}. ${it.name}</span><strong>${it.score}</strong></div>`
+            ).join('');
         }
     </script>
 </body>
