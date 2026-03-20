@@ -19,8 +19,6 @@
         .opt-btn { background: white; color: #333; border: 2px solid var(--primary); text-align: left; padding: 14px 20px; font-size: 1rem; border-radius: 14px; cursor: pointer; }
         .rank-box { margin-top: 25px; background: #f1f8e9; padding: 20px; border-radius: 16px; text-align: left; }
         .rank-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #ccc; }
-        
-        /* Effect สั่นตอนเวลาเหลือน้อย */
         .pulse-warning { animation: pulse-red 0.5s infinite; }
         @keyframes pulse-red { 0% { box-shadow: 0 0 0 0px rgba(231, 76, 60, 0.4); } 100% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); } }
     </style>
@@ -55,11 +53,11 @@
         <button onclick="location.reload()" style="margin-top: 20px; background: #555;">เล่นอีกครั้ง</button>
     </div>
 
-    <!-- Sounds -->
+    <!-- แหล่งเสียงใหม่: ใสกว่าเดิม ไม่มีเสียงฝนตก -->
     <audio id="snd-correct" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
     <audio id="snd-wrong" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
     <audio id="snd-tick" src="https://assets.mixkit.co/active_storage/sfx/2056/2056-preview.mp3"></audio>
-    <audio id="snd-bg" src="https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3" loop></audio>
+    <audio id="snd-bg" src="https://assets.mixkit.co/active_storage/sfx/2658/2658-preview.mp3" loop></audio>
 
     <script>
         const FIREBASE_URL = "https://quizgame-bd719-default-rtdb.asia-southeast1.firebasedatabase.app/scores.json"; 
@@ -98,7 +96,8 @@
             if(!userName) return alert("กรุณาระบุชื่อ และรหัสพนักงาน");
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
-            sndBg.play().catch(e => console.log("Audio Error"));
+            sndBg.volume = 0.4; // ลดความดังเพลงพื้นหลังลงนิดหน่อยเพื่อความสบายหู
+            sndBg.play().catch(e => console.log("Audio Start Failed"));
             showQuestion();
         };
 
@@ -122,7 +121,10 @@
             timer = setInterval(() => {
                 timeLeft--;
                 updateUI();
-                if(timeLeft <= 5 && timeLeft > 0) sndTick.play();
+                if(timeLeft <= 5 && timeLeft > 0) {
+                    sndTick.currentTime = 0;
+                    sndTick.play();
+                }
                 if(timeLeft <= 0) checkAnswer(-1);
             }, 1000);
         }
@@ -149,11 +151,10 @@
             clearInterval(timer);
             if(idx === questions[currentQ].c) {
                 sndCorrect.currentTime = 0; sndCorrect.play();
-                // 15-11 วินาที (5 วินาทีแรก) = 10 คะแนน
-                // 10-6 วินาที = ลดคะแนนตามเวลา (9,8,7,6)
-                // 5 วินาทีลงไป = ขั้นต่ำ 5 คะแนน
                 let points = 10;
+                // 15-11 วินาที = 10 คะแนน
                 if(timeLeft < 11 && timeLeft >= 6) points = timeLeft - 1; 
+                // 5 วินาทีลงไป = ขั้นต่ำ 5 คะแนน
                 if(timeLeft < 6) points = 5;
                 score += points;
             } else {
