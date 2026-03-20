@@ -6,28 +6,32 @@
     <title>LCB1 SAFETY QUIZ</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #004d40; --secondary: #00796b; --accent: #ffc107; --danger: #ff5252; --bg: #e0f2f1; }
-        body { font-family: 'Kanit', sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { background: white; width: 92%; max-width: 480px; padding: 30px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; }
+        :root { --primary: #004d40; --secondary: #00796b; --accent: #4caf50; --warning: #ff9800; --danger: #f44336; --bg: #e0f2f1; }
+        body { font-family: 'Kanit', sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
+        .card { background: white; width: 92%; max-width: 480px; padding: 30px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; position: relative; z-index: 1; }
         .hidden { display: none !important; }
         input { width: 90%; padding: 16px; margin: 20px 0; border: 2px solid #b2dfdb; border-radius: 14px; font-size: 1.1rem; text-align: center; outline: none; }
         button { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 14px; font-size: 1.1rem; cursor: pointer; width: 100%; margin: 10px 0; font-weight: 500; transition: 0.2s; }
         button:hover { background: var(--secondary); transform: translateY(-2px); }
-        #timer-bar { width: 100%; height: 10px; background: #eee; border-radius: 5px; margin: 20px 0; overflow: hidden; }
+        #timer-bar { width: 100%; height: 12px; background: #eee; border-radius: 6px; margin: 20px 0; overflow: hidden; border: 1px solid #ddd; }
         #timer-progress { width: 100%; height: 100%; background: var(--accent); transition: linear 1s; }
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
-        .opt-btn { background: white; color: #333; border: 2px solid var(--primary); text-align: left; padding: 14px 20px; font-size: 1rem; border-radius: 14px; cursor: pointer; }
+        .opt-btn { background: white; color: #333; border: 2px solid var(--primary); text-align: left; padding: 14px 20px; font-size: 1rem; border-radius: 14px; cursor: pointer; transition: 0.1s; }
+        .opt-btn:active { background: #f0f0f0; transform: scale(0.98); }
         .rank-box { margin-top: 25px; background: #f1f8e9; padding: 20px; border-radius: 16px; text-align: left; }
         .rank-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #ccc; }
+        .pulse-red { animation: pulse 0.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0px rgba(244, 67, 54, 0.4); } 100% { box-shadow: 0 0 0 15px rgba(244, 67, 54, 0); } }
     </style>
 </head>
 <body>
 
     <div id="start-screen" class="card">
         <h1 style="color: var(--primary); margin: 0;">🚢 LCB1 SAFETY QUIZ</h1>
-        <p style="color: #666;">แบบทดสอบความปลอดภัยท่าเรือ (20 ข้อ)</p>
-        <input type="text" id="username" placeholder="ระบุชื่อและรหัสพนักงาน" maxlength="40">
+        <p style="color: #666;">ตอบไว ปลอดภัย ได้คะแนนเต็ม!</p>
+        <input type="text" id="username" placeholder="ระบุชื่อ และรหัสพนักงาน" maxlength="40">
         <button id="btn-start">เริ่มทำแบบทดสอบ</button>
+        <p style="font-size: 0.8rem; color: #999;">*กรุณาเปิดเสียงเพื่อความตื่นเต้น*</p>
     </div>
 
     <div id="game-screen" class="card hidden">
@@ -51,6 +55,12 @@
         <button onclick="location.reload()" style="margin-top: 20px; background: #555;">เล่นอีกครั้ง</button>
     </div>
 
+    <!-- Sound Assets -->
+    <audio id="snd-correct" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
+    <audio id="snd-wrong" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
+    <audio id="snd-tick" src="https://assets.mixkit.co/active_storage/sfx/2056/2056-preview.mp3"></audio>
+    <audio id="snd-bg" src="https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3" loop></audio>
+
     <script>
         const FIREBASE_URL = "https://quizgame-bd719-default-rtdb.asia-southeast1.firebasedatabase.app/scores.json"; 
 
@@ -61,7 +71,7 @@
             { q: "4. ข้อใดคือกฎสำคัญที่สุดของการทำงานใกล้ตู้คอนเทนเนอร์ที่กำลังยก?", a: ["เดินให้เร็ว", "ห้ามอยู่ใต้โหลดที่กำลังยกเด็ดขาด", "ใช้โทรศัพท์ติดต่อ", "ยืนรอใกล้ๆ"], c: 1 },
             { q: "5. ก่อนเริ่มซ่อมบำรุงเครื่องจักรหรือระบบไฟฟ้า เพื่อความปลอดภัยสูงสุดควรทำอย่างไร?", a: ["ปิดเครื่องเฉยๆ", "ใช้ระบบ Lockout / Tagout", "รีบซ่อม", "แจ้งเพื่อน"], c: 1 },
             { q: "6. 'Near Miss' (เหตุการณ์เกือบเกิดอุบัติเหตุ) ควรรายงานหรือไม่?", a: ["ไม่ต้องรายงาน", "รายงานเฉพาะถ้ามีของเสียหาย", "ต้องรายงานเพื่อป้องกันอุบัติเหตุจริง", "รายงานเฉพาะตอนประชุม"], c: 2 },
-            { q: "7. การเดินข้ามถนนในเขตท่าเรือ ข้อใดปลอดภัยที่สุด?", a: ["เดินข้ามที่ทางม้าลาย", "เดินระหว่างตู้คอนเทนเนอร์", "วิ่งตัดหน้าหัวลาก", "เดินจุดไหนก็ได้"], c: 0 },
+            { q: "7. ก่อนที่ผู้รับเหมาจะเริ่มปฏิบัติงานเสี่ยง (เช่น งานร้อน, งานที่สูง) ในท่าเรือ ต้องดำเนินการสิ่งใดก่อน?", a: ["เริ่มงานได้เลยถ้าหัวหน้าสั่ง", "ขออนุมัติใบอนุญาตทำงาน (Work Permit)", "แจ้ง รปภ. ปากเปล่า", "รอให้งานเสร็จค่อยแจ้ง"], c: 1 },
             { q: "8. เมื่อเห็นสัญลักษณ์วงกลมสีฟ้าและมีรูปภาพสีขาว หมายถึงอะไร?", a: ["ป้ายห้ามเข้า", "ระวัง", "บังคับให้ปฏิบัติ/สวมใส่", "ทางหนีไฟ"], c: 2 },
             { q: "9. ความเร็วสูงสุดที่อนุญาตให้ขับขี่ภายในเขตท่าเรือคือเท่าใด?", a: ["30 กม./ชม.", "60 กม./ชม.", "80 กม./ชม.", "ขับตามความรีบ"], c: 0 },
             { q: "10. หากเพื่อนร่วมงานถูกไฟฟ้าดูดและยังติดกับสายไฟ ควรทำอย่างไร?", a: ["รีบเข้าไปดึงมือเพื่อน", "ใช้ไม้หรือวัตถุไม่เป็นตัวนำเขี่ยสายไฟออก", "สาดน้ำใส่เพื่อน", "รอให้ไฟดับเอง"], c: 1 },
@@ -77,21 +87,26 @@
             { q: "20. ใครมีหน้าที่รับผิดชอบด้านความปลอดภัยในท่าเรือ?", a: ["Safety เท่านั้น", "คนขับรถเท่านั้น", "พนักงานทุกคน", "รปภ. เท่านั้น"], c: 2 }
         ];
 
-        let currentQ = 0, score = 0, timer, timeLeft = 10, userName = "";
+        let currentQ = 0, score = 0, timer, timeLeft = 15, userName = "";
+        const sndCorrect = document.getElementById('snd-correct');
+        const sndWrong = document.getElementById('snd-wrong');
+        const sndTick = document.getElementById('snd-tick');
+        const sndBg = document.getElementById('snd-bg');
 
         document.getElementById('btn-start').onclick = () => {
             userName = document.getElementById('username').value.trim();
             if(!userName) return alert("กรุณาระบุชื่อ และรหัสพนักงานก่อนครับ");
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
+            sndBg.play().catch(e => console.log("Audio play failed"));
             showQuestion();
         };
 
         function showQuestion() {
             if(currentQ >= questions.length) return endGame();
             clearInterval(timer);
-            timeLeft = 10;
-            updateTimerBar();
+            timeLeft = 15;
+            updateUI();
             const qData = questions[currentQ];
             document.getElementById('q-number').innerText = `ข้อที่ ${currentQ + 1}/20`;
             document.getElementById('question-text').innerText = qData.q;
@@ -105,26 +120,52 @@
                 container.appendChild(btn);
             });
             timer = setInterval(() => {
-                timeLeft--; updateTimerBar();
+                timeLeft--;
+                updateUI();
+                if(timeLeft <= 5 && timeLeft > 0) {
+                    sndTick.currentTime = 0;
+                    sndTick.play();
+                }
                 if(timeLeft <= 0) checkAnswer(-1);
             }, 1000);
         }
 
-        function updateTimerBar() {
+        function updateUI() {
             const progress = document.getElementById('timer-progress');
-            progress.style.width = (timeLeft * 10) + "%";
-            progress.style.background = timeLeft <= 3 ? "var(--danger)" : "var(--accent)";
+            const card = document.getElementById('game-screen');
+            progress.style.width = (timeLeft / 15 * 100) + "%";
+            
+            if(timeLeft > 10) { 
+                progress.style.background = "var(--accent)"; 
+                card.classList.remove('pulse-red');
+            } else if(timeLeft > 5) {
+                progress.style.background = "var(--warning)"; 
+                card.classList.remove('pulse-red');
+            } else {
+                progress.style.background = "var(--danger)"; 
+                card.classList.add('pulse-red');
+            }
         }
 
         function checkAnswer(idx) {
             clearInterval(timer);
-            if(idx === questions[currentQ].c) score += (timeLeft >= 8) ? 10 : 8;
+            if(idx === questions[currentQ].c) {
+                sndCorrect.currentTime = 0;
+                sndCorrect.play();
+                let points = 10;
+                if (timeLeft <= 10) points = Math.max(5, timeLeft); 
+                score += points;
+            } else {
+                sndWrong.currentTime = 0;
+                sndWrong.play();
+            }
             document.getElementById('score-now').innerText = `คะแนน: ${score}`;
             currentQ++;
-            showQuestion();
+            setTimeout(showQuestion, 600);
         }
 
         async function endGame() {
+            sndBg.pause();
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
             document.getElementById('final-score').innerText = score;
@@ -136,7 +177,7 @@
                 document.getElementById('save-status').innerText = "บันทึกข้อมูลเรียบร้อย!";
                 loadLeaderboard();
             } catch (e) {
-                document.getElementById('save-status').innerText = "บันทึกไม่สำเร็จ (ตรวจสอบเน็ต)";
+                document.getElementById('save-status').innerText = "บันทึกไม่สำเร็จ";
             }
         }
 
