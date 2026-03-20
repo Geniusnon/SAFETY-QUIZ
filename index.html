@@ -6,32 +6,32 @@
     <title>LCB1 SAFETY QUIZ</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #004d40; --secondary: #00796b; --accent: #4caf50; --warning: #ff9800; --danger: #f44336; --bg: #e0f2f1; }
+        :root { --primary: #004d40; --secondary: #00796b; --green: #2ecc71; --yellow: #f1c40f; --red: #e74c3c; --bg: #e0f2f1; }
         body { font-family: 'Kanit', sans-serif; background: var(--bg); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow-x: hidden; }
-        .card { background: white; width: 92%; max-width: 480px; padding: 30px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; position: relative; z-index: 1; }
+        .card { background: white; width: 92%; max-width: 480px; padding: 30px; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; position: relative; }
         .hidden { display: none !important; }
         input { width: 90%; padding: 16px; margin: 20px 0; border: 2px solid #b2dfdb; border-radius: 14px; font-size: 1.1rem; text-align: center; outline: none; }
         button { background: var(--primary); color: white; border: none; padding: 16px; border-radius: 14px; font-size: 1.1rem; cursor: pointer; width: 100%; margin: 10px 0; font-weight: 500; transition: 0.2s; }
         button:hover { background: var(--secondary); transform: translateY(-2px); }
-        #timer-bar { width: 100%; height: 12px; background: #eee; border-radius: 6px; margin: 20px 0; overflow: hidden; border: 1px solid #ddd; }
-        #timer-progress { width: 100%; height: 100%; background: var(--accent); transition: linear 1s; }
+        #timer-bar { width: 100%; height: 14px; background: #eee; border-radius: 7px; margin: 20px 0; overflow: hidden; border: 1px solid #ddd; }
+        #timer-progress { width: 100%; height: 100%; background: var(--green); transition: 1s linear; }
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
-        .opt-btn { background: white; color: #333; border: 2px solid var(--primary); text-align: left; padding: 14px 20px; font-size: 1rem; border-radius: 14px; cursor: pointer; transition: 0.1s; }
-        .opt-btn:active { background: #f0f0f0; transform: scale(0.98); }
+        .opt-btn { background: white; color: #333; border: 2px solid var(--primary); text-align: left; padding: 14px 20px; font-size: 1rem; border-radius: 14px; cursor: pointer; }
         .rank-box { margin-top: 25px; background: #f1f8e9; padding: 20px; border-radius: 16px; text-align: left; }
         .rank-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #ccc; }
-        .pulse-red { animation: pulse 0.5s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0px rgba(244, 67, 54, 0.4); } 100% { box-shadow: 0 0 0 15px rgba(244, 67, 54, 0); } }
+        
+        /* Effect สั่นตอนเวลาเหลือน้อย */
+        .pulse-warning { animation: pulse-red 0.5s infinite; }
+        @keyframes pulse-red { 0% { box-shadow: 0 0 0 0px rgba(231, 76, 60, 0.4); } 100% { box-shadow: 0 0 0 15px rgba(231, 76, 60, 0); } }
     </style>
 </head>
 <body>
 
     <div id="start-screen" class="card">
         <h1 style="color: var(--primary); margin: 0;">🚢 LCB1 SAFETY QUIZ</h1>
-        <p style="color: #666;">ตอบไว ปลอดภัย ได้คะแนนเต็ม!</p>
+        <p style="color: #666;">ตอบถูกและไว รับคะแนนสูงสุด!</p>
         <input type="text" id="username" placeholder="ระบุชื่อ และรหัสพนักงาน" maxlength="40">
         <button id="btn-start">เริ่มทำแบบทดสอบ</button>
-        <p style="font-size: 0.8rem; color: #999;">*กรุณาเปิดเสียงเพื่อความตื่นเต้น*</p>
     </div>
 
     <div id="game-screen" class="card hidden">
@@ -55,7 +55,7 @@
         <button onclick="location.reload()" style="margin-top: 20px; background: #555;">เล่นอีกครั้ง</button>
     </div>
 
-    <!-- Sound Assets -->
+    <!-- Sounds -->
     <audio id="snd-correct" src="https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3"></audio>
     <audio id="snd-wrong" src="https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3"></audio>
     <audio id="snd-tick" src="https://assets.mixkit.co/active_storage/sfx/2056/2056-preview.mp3"></audio>
@@ -95,10 +95,10 @@
 
         document.getElementById('btn-start').onclick = () => {
             userName = document.getElementById('username').value.trim();
-            if(!userName) return alert("กรุณาระบุชื่อ และรหัสพนักงานก่อนครับ");
+            if(!userName) return alert("กรุณาระบุชื่อ และรหัสพนักงาน");
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
-            sndBg.play().catch(e => console.log("Audio play failed"));
+            sndBg.play().catch(e => console.log("Audio Error"));
             showQuestion();
         };
 
@@ -122,10 +122,7 @@
             timer = setInterval(() => {
                 timeLeft--;
                 updateUI();
-                if(timeLeft <= 5 && timeLeft > 0) {
-                    sndTick.currentTime = 0;
-                    sndTick.play();
-                }
+                if(timeLeft <= 5 && timeLeft > 0) sndTick.play();
                 if(timeLeft <= 0) checkAnswer(-1);
             }, 1000);
         }
@@ -135,29 +132,32 @@
             const card = document.getElementById('game-screen');
             progress.style.width = (timeLeft / 15 * 100) + "%";
             
-            if(timeLeft > 10) { 
-                progress.style.background = "var(--accent)"; 
-                card.classList.remove('pulse-red');
-            } else if(timeLeft > 5) {
-                progress.style.background = "var(--warning)"; 
-                card.classList.remove('pulse-red');
+            // ปรับสีตามความต้องการ: 15-11 เขียว | 10-6 เหลือง | 5-0 แดง
+            if(timeLeft >= 11) { 
+                progress.style.background = "var(--green)"; 
+                card.classList.remove('pulse-warning');
+            } else if(timeLeft >= 6) {
+                progress.style.background = "var(--yellow)"; 
+                card.classList.remove('pulse-warning');
             } else {
-                progress.style.background = "var(--danger)"; 
-                card.classList.add('pulse-red');
+                progress.style.background = "var(--red)"; 
+                card.classList.add('pulse-warning');
             }
         }
 
         function checkAnswer(idx) {
             clearInterval(timer);
             if(idx === questions[currentQ].c) {
-                sndCorrect.currentTime = 0;
-                sndCorrect.play();
+                sndCorrect.currentTime = 0; sndCorrect.play();
+                // 15-11 วินาที (5 วินาทีแรก) = 10 คะแนน
+                // 10-6 วินาที = ลดคะแนนตามเวลา (9,8,7,6)
+                // 5 วินาทีลงไป = ขั้นต่ำ 5 คะแนน
                 let points = 10;
-                if (timeLeft <= 10) points = Math.max(5, timeLeft); 
+                if(timeLeft < 11 && timeLeft >= 6) points = timeLeft - 1; 
+                if(timeLeft < 6) points = 5;
                 score += points;
             } else {
-                sndWrong.currentTime = 0;
-                sndWrong.play();
+                sndWrong.currentTime = 0; sndWrong.play();
             }
             document.getElementById('score-now').innerText = `คะแนน: ${score}`;
             currentQ++;
