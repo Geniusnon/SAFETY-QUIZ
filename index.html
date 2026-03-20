@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LCB1 - NA3 FAN QUIZ</title>
+    <title>NA3 FAN QUIZ </title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #004d40; --secondary: #00796b; --green: #2ecc71; --yellow: #f1c40f; --red: #e74c3c; --bg: #e0f2f1; }
@@ -16,7 +16,8 @@
         #timer-bar { width: 100%; height: 14px; background: #eee; border-radius: 7px; margin: 20px 0; overflow: hidden; border: 1px solid #ddd; }
         #timer-progress { width: 100%; height: 100%; background: var(--green); transition: 1s linear; }
         .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 20px; }
-        .opt-btn { background: white; color: #333; border: 2px solid var(--primary); text-align: left; padding: 14px 20px; font-size: 1rem; border-radius: 14px; cursor: pointer; }
+        .opt-btn { background: white; color: #333; border: 2px solid var(--primary); text-align: left; padding: 14px 20px; font-size: 1rem; border-radius: 14px; cursor: pointer; transition: 0.2s; }
+        .opt-btn:hover { background: #f0f4f4; border-color: var(--secondary); }
         .rank-box { margin-top: 25px; background: #f1f8e9; padding: 20px; border-radius: 16px; text-align: left; }
         .rank-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed #ccc; }
         .pulse-warning { animation: pulse-red 0.5s infinite; }
@@ -28,7 +29,7 @@
     <div id="start-screen" class="card">
         <h1 style="color: var(--primary); margin: 0;">😎 NA3 FAN QUIZ</h1>
         <p style="color: #666;">พิสูจน์ความเป็นแฟนพันธุ์แท้ NA3!</p>
-        <input type="text" id="username" placeholder="ระบุชื่อ และรหัสพนักงาน" maxlength="40">
+        <input type="text" id="username" placeholder="ระบุชื่อของคุณ" maxlength="40">
         <button id="btn-start">เริ่มทำแบบทดสอบ</button>
     </div>
 
@@ -58,16 +59,15 @@
     <audio id="snd-tick" src="https://assets.mixkit.co/active_storage/sfx/2056/2056-preview.mp3"></audio>
 
     <script>
-        // ใช้ URL เดิมเพื่อให้บันทึกที่เดิมได้เลย
         const FIREBASE_URL = "https://quizgame-bd719-default-rtdb.asia-southeast1.firebasedatabase.app/scores.json"; 
 
         const questions = [
             { q: "1. NA 3 คืออะไร?", a: ["ผู้คน", "สถานที่", "รถ", "บ้าน"], c: 0 },
             { q: "2. ใครที่เท่ที่สุดใน NA3?", a: ["นนท์", "นนท์เท่", "นนท์เฟี้ยว", "นนท์เก่ว"], c: 0 },
-            { q: "3. ถ้าพูดถึงความเฟี้ยวใน NA3 ต้องนึกถึงใครเป็นคนแรก?", a: ["คนแถวนี้แหละ", "นนท์คนเดิม", "น๊นท์ (เสียงสูง)", "ถูกทุกข้อที่คือนนท์"], c: 1 },
-            { q: "4. นนท์ NA3 มีดีที่ตรงไหนมากที่สุด?", a: ["หน้าตาดี", "ความเท่ระเบิด", "ความเก๋าระดับเทพ", "ถูกทุกข้อ"], c: 3 },
-            { q: "5. วันไหนที่นนท์จะหยุดเท่?", a: ["วันอาทิตย์", "วันหยุดราชการ", "ไม่มีวันหยุดเท่", "วันลาพักร้อน"], c: 2 },
-            { q: "6. ระดับความหล่อของนนท์ในสายตาชาว NA3?", a: ["ดีใช้ได้", "หล่อมาก", "หล่อทะลุปรอท", "หล่อเกินคำบรรยาย"], c: 3 },
+            { q: "3. ถ้าพูดถึงความเฟี้ยวใน NA3 ต้องนึกถึงใครเป็นคนแรก?", a: ["เพื่อนข้างๆ", "นนท์คนเดิม", "น๊นท์ (เสียงสูง)", "ถูกทุกข้อที่คือนนท์"], c: 1 },
+            { q: "4. นนท์ NA3 มีดีที่ตรงไหนมากที่สุด?", a: ["หน้าตาดีเกินต้าน", "ความเท่ระเบิดระเบ้อ", "ความเก๋าระดับเทพ", "ถูกทุกข้อ"], c: 3 },
+            { q: "5. วันไหนที่นนท์จะหยุดเท่?", a: ["วันหยุด", "วันเงินเดือนออก", "ไม่มีวันหยุดเท่", "วันลาพักร้อน"], c: 2 },
+            { q: "6. ระดับความหล่อของนนท์ในสายตาชาว NA3?", a: ["ก็พอได้นะ", "หล่อมาก", "หล่อทะลุปรอท", "หล่อเกินคำบรรยาย"], c: 3 },
             { q: "7. ท่าทางประจำตัวที่นนท์ชอบทำบ่อยๆ คือ?", a: ["ท่ายิ้มกระชากใจ", "ท่ายืนสุดเท่", "ท่าเดินเฟี้ยวๆ", "ท่าไหนก็น่ารักถ้าเป็นนนท์"], c: 3 },
             { q: "8. ถ้า NA3 ไม่มีนนท์ บรรยากาศจะเป็นอย่างไร?", a: ["เงียบเหงาเกินไป", "ขาดสีสันความสนุก", "ขาดคนเท่ประจำกลุ่ม", "ถูกทุกข้อ"], c: 3 },
             { q: "9. สโลแกนประจำตัว 'นนท์ NA3' คืออะไร?", a: ["หล่ออมตะ", "เท่ระเบิดระเบ้อ", "เฟี้ยวเงาะเจ้าชายเย็นชา", "ตำนานที่ยังมีลมหายใจ"], c: 1 },
@@ -81,7 +81,7 @@
 
         document.getElementById('btn-start').onclick = () => {
             userName = document.getElementById('username').value.trim();
-            if(!userName) return alert("กรุณาระบุชื่อ และรหัสพนักงาน");
+            if(!userName) return alert("ระบุชื่อหน่อยครับความเท่จะได้มีที่อยู่!");
             document.getElementById('start-screen').classList.add('hidden');
             document.getElementById('game-screen').classList.remove('hidden');
             showQuestion();
@@ -153,14 +153,16 @@
             document.getElementById('result-screen').classList.remove('hidden');
             document.getElementById('final-score').innerText = score;
             try {
-                await fetch(FIREBASE_URL, {
+                const res = await fetch(FIREBASE_URL, {
                     method: "POST",
-                    body: JSON.stringify({ name: userName, score: score, date: new Date().toLocaleString() })
+                    body: JSON.stringify({ name: userName, score: score, date: new Date().toLocaleString(), type: "NA3_FAN" })
                 });
-                document.getElementById('save-status').innerText = "บันทึกอันดับความเท่แล้ว!";
-                loadLeaderboard();
+                if(res.ok) {
+                    document.getElementById('save-status').innerText = "บันทึกความเท่เรียบร้อย!";
+                    loadLeaderboard();
+                }
             } catch (e) {
-                document.getElementById('save-status').innerText = "บันทึกไม่สำเร็จ";
+                document.getElementById('save-status').innerText = "บันทึกล้มเหลว (ลองรีเฟรชใหม่)";
             }
         }
 
